@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>私は仕事が大好きです。</title>
+    <style>
+        main > * { padding: 10px; }
+        header {background-color: palegreen; padding: 10px; }
+        main {background-color: lightblue; padding: 10px; }
+        footer {background-color: hotpink; padding: 10px; }
+        .flexbox {
+            display: flex;
+            flex-flow: column;
+        }
+        .flexbox-space-evenly {
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .flexbox-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="liffAppContent">
+
+    <header class="sticky-top flexbox-end">
+        <span class="user-name" style="margin:auto 10px;">
+            向坂 しげる
+        </span>
+        <div class="icon">
+            <img src="https://avatars.githubusercontent.com/u/8898432?v=4" class="rounded-circle" height="50px">
+        </div>
+    </header>
+    <main class="flexbox">
+        <h2 id="question">
+        </h2>
+
+        <ul class="list-group" id="selector-list">
+        </ul>
+
+        <ul class="list-group d-none" id="add-selector-forms">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                晴れかな
+            </li>
+        </ul>
+
+        <button class="btn btn-primary" id="change-mode" onclick="switchAddSelectorMode">Add Selector</button>
+    </main>
+    <footer class="fixed-bottom flexbox-space-evenly">
+        <button class="btn btn-primary" >Button</button>
+    </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+    <script>
+let mode = 'vote'
+
+window.onload = () => {
+    // addEventListener
+    var button = document.getElementById('change-mode')
+    button.addEventListener('click', switchAddSelectorMode)
+}
+
+const switchAddSelectorMode = () => {
+    if (mode === 'vote') {
+        mode = 'addSelector'
+        document.getElementById('selector-list').classList.remove('d-none')
+        document.getElementById('add-selector-forms').classList.add('d-none')
+    } else {
+        mode = 'vote'
+        document.getElementById('selector-list').classList.add('d-none')
+        document.getElementById('add-selector-forms').classList.remove('d-none')
+    }
+    console.log('called')
+    console.log({mode})
+}
+
+const clickLi = (event) => {
+    event.preventDefault()
+    event.currentTarget.classList.toggle('active')
+}
+
+const fetchQuestion = async () => {
+    const requestUrl = 'https://script.google.com/macros/s/AKfycbzfsiXhbAthtW0xJjRrMaqns-UDi53uCzLexwSnGaxQK1ONqcttWEwEsvQ7XqD1SZAk/exec'
+    const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=4geru`)
+    console.log(response.data)
+
+    setSelector(response.data.selectors)
+    setQuestion(response.question.question)
+}
+// fetchQuestion()
+
+const setSelector = (selectors) => {
+    const ul = document.getElementById('selector-list')
+    ul.innerHTML = ''
+
+    for (selector of selectors) {
+        console.log({selector})
+        const newLi = document.createElement("li")
+        const newContent = document.createTextNode(selector.selector)
+        newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
+        newLi.addEventListener('click', clickLi)
+        newLi.dataset.value = selector.index
+        newLi.dataset.questionId = questionId()
+        newLi.appendChild(newContent)
+        ul.appendChild(newLi)
+    }
+}
+const setQuestion = (question) => {
+    const ul = document.getElementById('question')
+    ul.innerText = question
+}
+const questionId = () => {
+    const url = new URL(location)
+    return url.searchParams.get("question")
+}
+
+const mock = () => {
+    question = '今日の天気は？'
+    selectors = [
+        {index: 2, selector: "晴れです"},
+        {index: 3, selector: "雨です"}
+    ]
+    setSelector(selectors)
+    setQuestion('今日の天気は？')
+}
+mock()
+    </script>
+  </body>
+</html>

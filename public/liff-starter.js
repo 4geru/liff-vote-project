@@ -1,30 +1,37 @@
 window.onload = function() {
-    const useNodeJS = true;   // if you are not using a node server, set this value to false
-    const defaultLiffId = "";   // change the default LIFF value if you are not using a node server
+    fetchSpreadSheetInfo()
+    // const useNodeJS = true;   // if you are not using a node server, set this value to false
+    // const defaultLiffId = "";   // change the default LIFF value if you are not using a node server
 
-    // DO NOT CHANGE THIS
-    let myLiffId = "";
+    // // DO NOT CHANGE THIS
+    // let myLiffId = "";
 
-    // if node is used, fetch the environment variable and pass it to the LIFF method
-    // otherwise, pass defaultLiffId
-    if (useNodeJS) {
-        fetch('/send-id')
-            .then(function(reqResponse) {
-                return reqResponse.json();
-            })
-            .then(function(jsonResponse) {
-                myLiffId = jsonResponse.id;
-                initializeLiffOrDie(myLiffId);
-            })
-            .catch(function(error) {
-                document.getElementById("liffAppContent").classList.add('hidden');
-                document.getElementById("nodeLiffIdErrorMessage").classList.remove('hidden');
-            });
-    } else {
-        myLiffId = defaultLiffId;
-        initializeLiffOrDie(myLiffId);
-    }
+    // // if node is used, fetch the environment variable and pass it to the LIFF method
+    // // otherwise, pass defaultLiffId
+    // if (useNodeJS) {
+    //     fetch('/send-id')
+    //         .then(function(reqResponse) {
+    //             return reqResponse.json();
+    //         })
+    //         .then(function(jsonResponse) {
+    //             myLiffId = jsonResponse.id;
+    //             initializeLiffOrDie(myLiffId);
+    //         })
+    //         .catch(function(error) {
+    //             document.getElementById("liffAppContent").classList.add('hidden');
+    //             document.getElementById("nodeLiffIdErrorMessage").classList.remove('hidden');
+    //         });
+    // } else {
+    //     myLiffId = defaultLiffId;
+    //     initializeLiffOrDie(myLiffId);
+    // }
 };
+
+async function fetchSpreadSheetInfo() {
+    const response = await axios.get('https://script.google.com/macros/s/AKfycbzdujzNQHvQa9QiGIu_tDlqCSq1abvP4VsxTrGr8XPyXcOA5N2NUSXD9ntVN5t8wYMK/exec?response=true&name=4geru')
+    console.log({response})
+    console.log('called')
+}
 
 /**
 * Check if myLiffId is null. If null do not initiate liff.
