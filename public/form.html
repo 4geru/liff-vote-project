@@ -70,6 +70,11 @@ window.onload = () => {
     button.addEventListener('click', switchAddSelectorMode)
 }
 
+const questionId = () => {
+    const url = new URL(location)
+    return url.searchParams.get("question")
+}
+
 const switchAddSelectorMode = () => {
     if (mode === 'vote') {
         mode = 'addSelector'
@@ -94,43 +99,49 @@ const fetchQuestion = async () => {
     const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=4geru`)
     console.log(response.data)
 
-    setSelector(response.data.selectors)
-    setQuestion(response.question.question)
+    setSelector(response.data.selectors, response.data.isVoted)
+    setQuestion(response.data.question.question)
 }
 // fetchQuestion()
 
-const setSelector = (selectors) => {
+const setSelector = (selectors, isVoted) => {
     const ul = document.getElementById('selector-list')
     ul.innerHTML = ''
 
     for (selector of selectors) {
-        console.log({selector})
         const newLi = document.createElement("li")
         const newContent = document.createTextNode(selector.selector)
         newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
-        newLi.addEventListener('click', clickLi)
         newLi.dataset.value = selector.index
         newLi.dataset.questionId = questionId()
         newLi.appendChild(newContent)
         ul.appendChild(newLi)
+        if (isVoted) {
+            if (selector.index == isVoted) {
+                newLi.classList.add("active")
+            }
+            const newBadge = document.createElement("span")
+            newBadge.classList.add("badge", "bg-danger", "rounded-pill")
+            newBadge.innerHTML = selector.count
+            newLi.appendChild(newBadge)
+        } else {
+            newLi.classList.add("list-group-item-action")
+            newLi.addEventListener('click', clickLi)
+        }
     }
 }
 const setQuestion = (question) => {
     const ul = document.getElementById('question')
     ul.innerText = question
 }
-const questionId = () => {
-    const url = new URL(location)
-    return url.searchParams.get("question")
-}
 
 const mock = () => {
     question = '今日の天気は？'
     selectors = [
-        {index: 2, selector: "晴れです"},
-        {index: 3, selector: "雨です"}
+        {index: 2, selector: "晴れです", count: 1},
+        {index: 3, selector: "雨です", count: 0}
     ]
-    setSelector(selectors)
+    setSelector(selectors, 2)
     setQuestion('今日の天気は？')
 }
 mock()
