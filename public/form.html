@@ -26,6 +26,9 @@
             display: flex;
             justify-content: flex-end;
         }
+        button, input {
+            margin: 10px;
+        }
     </style>
   </head>
   <body>
@@ -47,12 +50,11 @@
         </ul>
 
         <ul class="list-group d-none" id="add-selector-forms">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                晴れかな
-            </li>
+            <input type="text" class="form-control" placeholder="選択肢" aria-label="選択肢">
         </ul>
 
-        <button class="btn btn-primary" id="change-mode" onclick="switchAddSelectorMode">Add Selector</button>
+        <button class="btn btn-primary" id="add-selector">Add Selector</button>
+        <button class="btn btn-primary" id="change-mode">Switch Mode</button>
     </main>
     <footer class="fixed-bottom flexbox-space-evenly">
         <button class="btn btn-primary" >Button</button>
@@ -65,9 +67,10 @@
 let mode = 'vote'
 
 window.onload = () => {
-    // addEventListener
     var button = document.getElementById('change-mode')
     button.addEventListener('click', switchAddSelectorMode)
+    var button = document.getElementById('add-selector')
+    button.addEventListener('click', addSelector)
 }
 
 const questionId = () => {
@@ -87,6 +90,15 @@ const switchAddSelectorMode = () => {
     }
     console.log('called')
     console.log({mode})
+}
+
+const addSelector = () => {
+    const ul = document.getElementById('add-selector-forms')
+    const newInput = document.createElement("input")
+    newInput.classList.add("form-control")
+    newInput.placeholder = '選択肢'
+    newInput.ariaLabel = '選択肢'
+    ul.appendChild(newInput)
 }
 
 const clickLi = (event) => {
@@ -110,11 +122,10 @@ const setSelector = (selectors, isVoted) => {
 
     for (selector of selectors) {
         const newLi = document.createElement("li")
-        const newContent = document.createTextNode(selector.selector)
         newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
         newLi.dataset.value = selector.index
         newLi.dataset.questionId = questionId()
-        newLi.appendChild(newContent)
+        newLi.innerText = selector.selector
         ul.appendChild(newLi)
         if (isVoted) {
             if (selector.index == isVoted) {
@@ -141,7 +152,7 @@ const mock = () => {
         {index: 2, selector: "晴れです", count: 1},
         {index: 3, selector: "雨です", count: 0}
     ]
-    setSelector(selectors, 2)
+    setSelector(selectors, undefined)
     setQuestion('今日の天気は？')
 }
 mock()
