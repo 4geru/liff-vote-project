@@ -65,6 +65,8 @@
   
     <script>
 let mode = 'vote'
+let userId = 'sakisaka04'
+const requestUrl = 'https://script.google.com/macros/s/AKfycbwUEyUGOwGDB7Nhu8_if_RVqqmkS8JhAIU527_8HmHtRXBb0P6YMYjEmYPBXsSkAXY0/exec'
 
 window.onload = () => {
     const changeModeButton = document.getElementById('change-mode-btn')
@@ -104,8 +106,19 @@ const submitAddSelector = () => {
     console.log('addSelector')
 }
 
-const submitVote = () => {
-    console.log('vote')
+const submitVote = async () => {
+    // formから選択されている情報を取得する
+    const selectedSelectors = [...document.getElementById('selector-list').getElementsByClassName('active')].map((selector) => {
+        return selector.dataset.selectorId
+    })
+
+    // APIリクエストを行う
+    const response = await axios.get(`${requestUrl}?type=vote&questionId=${questionId()}&userId=${userId}&selectorIds=${selectedSelectors.join(',')}`)
+
+    // 投票結果を表示する
+    if(response.data.status === 'ok') {
+        setSelector(response.data.selectors, response.data.votes)
+    }
 }
 
 const addSelector = () => {
@@ -123,29 +136,28 @@ const clickLi = (event) => {
 }
 
 const fetchQuestion = async () => {
-    const requestUrl = 'https://script.google.com/macros/s/AKfycbzYX4Nie8L-tg7qDCvzPzXS_p-_xmDbrEoT2jUTvamNMqyxIYGEtvlmI4R6yfozSJ1c/exec'
-    const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=4geru`)
-    debugger
+    const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=${userId}`)
     console.log(response.data)
 
-    setSelector(response.data.selectors, response.data.isVoted)
+    setSelector(response.data.selectors, response.data.votes)
     setQuestion(response.data.question.question)
 }
 fetchQuestion()
 
-const setSelector = (selectors, isVoted) => {
+const setSelector = (selectors, voteQuery) => {
+    const votes = voteQuery.split(',')
     const ul = document.getElementById('selector-list')
     ul.innerHTML = ''
 
     for (selector of selectors) {
         const newLi = document.createElement("li")
         newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
-        newLi.dataset.value = selector.index
-        newLi.dataset.questionId = questionId()
+        newLi.dataset.selectorId = selector.index
         newLi.innerText = selector.selector
         ul.appendChild(newLi)
-        if (isVoted) {
-            if (selector.index == isVoted) {
+        // 投票済みか否かを判定する
+        if (votes[0] !== '') {
+            if (votes.includes(`${selector.index}`)) {
                 newLi.classList.add("active")
             }
             const newBadge = document.createElement("span")
@@ -169,7 +181,7 @@ const mock = () => {
         {index: 2, selector: "晴れです", count: 1},
         {index: 3, selector: "雨です", count: 0}
     ]
-    setSelector(selectors, undefined)
+    setSelector(selectors, '')
     setQuestion('今日の天気は？')
 }
 mock()
