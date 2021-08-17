@@ -65,8 +65,8 @@
   
     <script>
 let mode = 'vote'
-let userId = 'sakisaka04'
-const requestUrl = 'https://script.google.com/macros/s/AKfycbwUEyUGOwGDB7Nhu8_if_RVqqmkS8JhAIU527_8HmHtRXBb0P6YMYjEmYPBXsSkAXY0/exec'
+let userId = 'sakisaka05'
+const requestUrl = 'https://script.google.com/macros/s/AKfycbx5hHjTxus8CA8gyao0gGE9KpYgv1Lp_h92WqhngaCVXQOhGNOSDP0sdf84OTnw_5DM/exec'
 
 window.onload = () => {
     const changeModeButton = document.getElementById('change-mode-btn')
@@ -102,8 +102,24 @@ const switchAddSelectorMode = () => {
     console.log({mode})
 }
 
-const submitAddSelector = () => {
-    console.log('addSelector')
+const submitAddSelector = async () => {
+    // 追加するselectorを定義する
+    const addSelectors = values = [...document.getElementsByTagName('input')]
+        .filter((input) => input.value !== '') // 空のinputを弾く
+        .map((input) => input.value) // 中の値を取得する
+
+    // APIリクエストを行う
+    const response = await axios.get(`${requestUrl}?type=addSelector&questionId=${questionId()}&userId=${userId}&selectors=${JSON.stringify(addSelectors)}`)
+
+    if(response.data.status === 'ok') {
+        // formをクリアにする
+        document.getElementById('add-selector-forms').innerHTML = ''
+        addSelector()
+        // 選択肢を更新する
+        setSelector(response.data.selectors, response.data.votes)
+        // 投票モードに変更する
+        switchAddSelectorMode()
+    }
 }
 
 const submitVote = async () => {
