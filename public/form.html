@@ -57,7 +57,7 @@
         <button class="btn btn-primary" id="change-mode-btn">Switch Mode</button>
     </main>
     <footer class="fixed-bottom flexbox-space-evenly">
-        <button class="btn btn-primary" >Button</button>
+        <button class="btn btn-primary" id="submit-btn">Button</button>
     </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
@@ -67,10 +67,12 @@
 let mode = 'vote'
 
 window.onload = () => {
-    var button = document.getElementById('change-mode-btn')
-    button.addEventListener('click', switchAddSelectorMode)
-    var button = document.getElementById('add-selector-btn')
-    button.addEventListener('click', addSelector)
+    const changeModeButton = document.getElementById('change-mode-btn')
+    changeModeButton.addEventListener('click', switchAddSelectorMode)
+    const addSelectorButton = document.getElementById('add-selector-btn')
+    addSelectorButton.addEventListener('click', addSelector)
+    const submit = document.getElementById('submit-btn')
+    submit.addEventListener('click', submitVote)
 }
 
 const questionId = () => {
@@ -79,18 +81,31 @@ const questionId = () => {
 }
 
 const switchAddSelectorMode = () => {
+    const submit = document.getElementById('submit-btn')
     if (mode === 'vote') {
         mode = 'addSelector'
         document.getElementById('selector-list').classList.add('d-none')
         document.getElementById('add-selector-forms').classList.remove('d-none')
         document.getElementById('add-selector-btn').classList.remove('d-none')
+        submit.addEventListener('click', submitAddSelector)
+        submit.removeEventListener('click', submitVote)
     } else {
         mode = 'vote'
         document.getElementById('selector-list').classList.remove('d-none')
         document.getElementById('add-selector-forms').classList.add('d-none')
         document.getElementById('add-selector-btn').classList.add('d-none')
+        submit.removeEventListener('click', submitAddSelector)
+        submit.addEventListener('click', submitVote)
     }
     console.log({mode})
+}
+
+const submitAddSelector = () => {
+    console.log('addSelector')
+}
+
+const submitVote = () => {
+    console.log('vote')
 }
 
 const addSelector = () => {
@@ -108,14 +123,15 @@ const clickLi = (event) => {
 }
 
 const fetchQuestion = async () => {
-    const requestUrl = 'https://script.google.com/macros/s/AKfycbzfsiXhbAthtW0xJjRrMaqns-UDi53uCzLexwSnGaxQK1ONqcttWEwEsvQ7XqD1SZAk/exec'
+    const requestUrl = 'https://script.google.com/macros/s/AKfycbzYX4Nie8L-tg7qDCvzPzXS_p-_xmDbrEoT2jUTvamNMqyxIYGEtvlmI4R6yfozSJ1c/exec'
     const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=4geru`)
+    debugger
     console.log(response.data)
 
     setSelector(response.data.selectors, response.data.isVoted)
     setQuestion(response.data.question.question)
 }
-// fetchQuestion()
+fetchQuestion()
 
 const setSelector = (selectors, isVoted) => {
     const ul = document.getElementById('selector-list')
