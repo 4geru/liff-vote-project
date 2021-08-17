@@ -66,15 +66,19 @@
     <script>
 let mode = 'vote'
 let userId = 'sakisaka05'
-const requestUrl = 'https://script.google.com/macros/s/AKfycbx5hHjTxus8CA8gyao0gGE9KpYgv1Lp_h92WqhngaCVXQOhGNOSDP0sdf84OTnw_5DM/exec'
+const requestUrl = 'https://script.google.com/macros/s/AKfycbypIo6i5ud2Pmp1Qiy0LOifaGdAGjHnyWMIaBDaYdakzgrEMxQpvpnCmzwa4sUnZTfy/exec'
 
 window.onload = () => {
     const changeModeButton = document.getElementById('change-mode-btn')
-    changeModeButton.addEventListener('click', switchAddSelectorMode)
+    changeModeButton.addEventListener('click', switchMode)
     const addSelectorButton = document.getElementById('add-selector-btn')
     addSelectorButton.addEventListener('click', addSelector)
     const submit = document.getElementById('submit-btn')
-    submit.addEventListener('click', submitVote)
+    if(!questionId()) {
+        setQuestionMode()
+    } else {
+        submit.addEventListener('click', submitVote)
+    }
 }
 
 const questionId = () => {
@@ -82,7 +86,7 @@ const questionId = () => {
     return url.searchParams.get("question")
 }
 
-const switchAddSelectorMode = () => {
+const switchMode = () => {
     const submit = document.getElementById('submit-btn')
     if (mode === 'vote') {
         mode = 'addSelector'
@@ -93,7 +97,7 @@ const switchAddSelectorMode = () => {
         submit.addEventListener('click', submitAddSelector)
         submit.removeEventListener('click', submitVote)
         submit.innerText = '追加'
-    } else {
+    } else if (mode === 'addSelector') {
         mode = 'vote'
         document.getElementById('selector-list').classList.remove('d-none')
         document.getElementById('add-selector-forms').classList.add('d-none')
@@ -106,9 +110,27 @@ const switchAddSelectorMode = () => {
     console.log({mode})
 }
 
+const submitAddForm = async () => {
+    const question = document.getElementsByTagName('input')[0].value
+    if(question === '') {
+        alert('質問を追加してください')
+        return
+    }
+
+    // APIリクエストを行う
+    const response = await axios.get(`${requestUrl}?type=addForm&question=${question}&userId=${userId}`)
+
+    if(response.data.status === 'ok') {
+        const url = new URL(location)
+        url.searchParams.append("question", response.data.questionId)
+        debugger
+        location = url
+    }
+}
+
 const submitAddSelector = async () => {
     // 追加するselectorを定義する
-    const addSelectors = values = [...document.getElementsByTagName('input')]
+    const addSelectors = [...document.getElementsByTagName('input')]
         .filter((input) => input.value !== '') // 空のinputを弾く
         .map((input) => input.value) // 中の値を取得する
 
@@ -122,7 +144,7 @@ const submitAddSelector = async () => {
         // 選択肢を更新する
         setSelector(response.data.selectors, response.data.votes)
         // 投票モードに変更する
-        switchAddSelectorMode()
+        switchMode()
     }
 }
 
@@ -139,6 +161,24 @@ const submitVote = async () => {
     if(response.data.status === 'ok') {
         setSelector(response.data.selectors, response.data.votes)
     }
+}
+
+const setQuestionMode = () => {
+    document.getElementById('question').innerText = '質問を追加'
+    document.getElementById('selector-list').classList.add('d-none')
+    document.getElementById('add-selector-forms').classList.remove('d-none')
+    document.getElementById('change-mode-btn').classList.add('d-none')
+    const submit = document.getElementById('submit-btn')
+    submit.innerText = '質問を登録'
+    submit.addEventListener('click', submitAddForm)
+    const ul = document.getElementById('add-selector-forms')
+    const newInput = document.createElement("input")
+    newInput.classList.add("form-control")
+    newInput.placeholder = '質問'
+    newInput.ariaLabel = '質問'
+    // 質問の場合追加項目は1つなので、既存のInputを消す
+    ul.innerHTML = ''
+    ul.appendChild(newInput)
 }
 
 const addSelector = () => {
@@ -162,7 +202,7 @@ const fetchQuestion = async () => {
     setSelector(response.data.selectors, response.data.votes)
     setQuestion(response.data.question.question)
 }
-fetchQuestion()
+// fetchQuestion()
 
 const setSelector = (selectors, voteQuery) => {
     const votes = voteQuery.split(',')
@@ -190,6 +230,7 @@ const setSelector = (selectors, voteQuery) => {
         }
     }
 }
+
 const setQuestion = (question) => {
     const ul = document.getElementById('question')
     ul.innerText = question
@@ -204,7 +245,7 @@ const mock = () => {
     setSelector(selectors, '')
     setQuestion('今日の天気は？')
 }
-mock()
+// mock()
     </script>
   </body>
 </html>
