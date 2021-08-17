@@ -53,8 +53,8 @@
             <input type="text" class="form-control" placeholder="選択肢" aria-label="選択肢">
         </ul>
 
-        <button class="btn btn-primary" id="add-selector">Add Selector</button>
-        <button class="btn btn-primary" id="change-mode">Switch Mode</button>
+        <button class="btn btn-primary d-none" id="add-selector-btn">Add Selector</button>
+        <button class="btn btn-primary" id="change-mode-btn">Switch Mode</button>
     </main>
     <footer class="fixed-bottom flexbox-space-evenly">
         <button class="btn btn-primary" >Button</button>
@@ -67,9 +67,9 @@
 let mode = 'vote'
 
 window.onload = () => {
-    var button = document.getElementById('change-mode')
+    var button = document.getElementById('change-mode-btn')
     button.addEventListener('click', switchAddSelectorMode)
-    var button = document.getElementById('add-selector')
+    var button = document.getElementById('add-selector-btn')
     button.addEventListener('click', addSelector)
 }
 
@@ -81,14 +81,15 @@ const questionId = () => {
 const switchAddSelectorMode = () => {
     if (mode === 'vote') {
         mode = 'addSelector'
-        document.getElementById('selector-list').classList.remove('d-none')
-        document.getElementById('add-selector-forms').classList.add('d-none')
-    } else {
-        mode = 'vote'
         document.getElementById('selector-list').classList.add('d-none')
         document.getElementById('add-selector-forms').classList.remove('d-none')
+        document.getElementById('add-selector-btn').classList.remove('d-none')
+    } else {
+        mode = 'vote'
+        document.getElementById('selector-list').classList.remove('d-none')
+        document.getElementById('add-selector-forms').classList.add('d-none')
+        document.getElementById('add-selector-btn').classList.add('d-none')
     }
-    console.log('called')
     console.log({mode})
 }
 
