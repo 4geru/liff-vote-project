@@ -53,11 +53,11 @@
             <input type="text" class="form-control" placeholder="選択肢" aria-label="選択肢">
         </ul>
 
-        <button class="btn btn-primary d-none" id="add-selector-btn">Add Selector</button>
-        <button class="btn btn-primary" id="change-mode-btn">Switch Mode</button>
+        <button class="btn btn-primary d-none" id="add-selector-btn">選択肢を追加</button>
+        <button class="btn btn-primary" id="change-mode-btn">選択肢を追加する</button>
     </main>
     <footer class="fixed-bottom flexbox-space-evenly">
-        <button class="btn btn-primary" id="submit-btn">Button</button>
+        <button class="btn btn-primary" id="submit-btn">投票</button>
     </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
@@ -89,15 +89,19 @@ const switchAddSelectorMode = () => {
         document.getElementById('selector-list').classList.add('d-none')
         document.getElementById('add-selector-forms').classList.remove('d-none')
         document.getElementById('add-selector-btn').classList.remove('d-none')
+        document.getElementById('change-mode-btn').innerText = '投票する'
         submit.addEventListener('click', submitAddSelector)
         submit.removeEventListener('click', submitVote)
+        submit.innerText = '追加'
     } else {
         mode = 'vote'
         document.getElementById('selector-list').classList.remove('d-none')
         document.getElementById('add-selector-forms').classList.add('d-none')
         document.getElementById('add-selector-btn').classList.add('d-none')
+        document.getElementById('change-mode-btn').innerText = '選択肢を追加する'
         submit.removeEventListener('click', submitAddSelector)
         submit.addEventListener('click', submitVote)
+        submit.innerText = '投票'
     }
     console.log({mode})
 }
