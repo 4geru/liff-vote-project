@@ -66,7 +66,7 @@
     <script>
 let mode = 'vote'
 let userId = 'sakisaka05'
-const requestUrl = 'https://script.google.com/macros/s/AKfycbypIo6i5ud2Pmp1Qiy0LOifaGdAGjHnyWMIaBDaYdakzgrEMxQpvpnCmzwa4sUnZTfy/exec'
+const requestUrl = 'https://script.google.com/macros/s/AKfycbyXKGOxfGt49S7oNGIoegOu9RAj-AOXku1hEP1gcnzLFN4oEW1NaNL81LKXoChLVVE2/exec'
 
 window.onload = () => {
     const changeModeButton = document.getElementById('change-mode-btn')
@@ -77,6 +77,7 @@ window.onload = () => {
     if(!questionId()) {
         setQuestionMode()
     } else {
+        fetchQuestion()
         submit.addEventListener('click', submitVote)
     }
 }
@@ -123,7 +124,6 @@ const submitAddForm = async () => {
     if(response.data.status === 'ok') {
         const url = new URL(location)
         url.searchParams.append("question", response.data.questionId)
-        debugger
         location = url
     }
 }
@@ -198,7 +198,6 @@ const clickLi = (event) => {
 const fetchQuestion = async () => {
     const response = await axios.get(`${requestUrl}?type=topInfo&formInfoIndex=${questionId()}&userId=${userId}`)
     console.log(response.data)
-
     setSelector(response.data.selectors, response.data.votes)
     setQuestion(response.data.question.question)
 }
