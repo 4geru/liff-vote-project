@@ -1,131 +1,281 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>LIFF Starter</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div id="liffAppContent">
-            <!-- ACTION BUTTONS -->
-            <div class="buttonGroup">
-                <div class="buttonRow">
-                    <button id="openWindowButton">Open External Window</button>
-                    <button id="closeWindowButton">Close LIFF App</button>
-                </div>
-                <div class="buttonRow">
-                    <button id="sendMessageButton">Send Message</button>
-                    <button id="getAccessToken">Get Access Token</button>
-                </div>
-                <div class="buttonRow">
-                    <button id="getProfileButton">Get Profile</button>
-                    <button id="shareTargetPicker">Open Share Target Picker</button>
-                </div>
-            </div>
-            <div id="shareTargetPickerMessage"></div>
-            <!-- ACCESS TOKEN DATA -->
-            <div id="accessTokenData" class="hidden textLeft">
-                <h2>Access Token</h2>
-                <a href="#" onclick="toggleAccessToken()">Close Access Token</a>
-                <table>
-                    <tr>
-                        <th>accessToken</th>
-                        <td id="accessTokenField"></td>
-                    </tr>
-                </table>
-            </div>
-            <!-- PROFILE INFO -->
-            <div id="profileInfo" class="hidden textLeft">
-                <h2>Profile</h2>
-                <a href="#" onclick="toggleProfileData()">Close Profile</a>
-                <div id="profilePictureDiv">
-                </div>
-                <table>
-                    <tr>
-                        <th>userId</th>
-                        <td id="userIdProfileField"></td>
-                    </tr>
-                    <tr>
-                        <th>displayName</th>
-                        <td id="displayNameField"></td>
-                    </tr>
-                    <tr>
-                        <th>statusMessage</th>
-                        <td id="statusMessageField"></td>
-                    </tr>
-                </table>
-            </div>
-            <!-- LIFF DATA -->
-            <div id="liffData">
-                <h2 id="liffDataHeader" class="textLeft">LIFF Data</h2>
-                <table>
-                    <tr>
-                        <th>OS</th>
-                        <td id="deviceOS" class="textLeft"></td>
-                    </tr>
-                    <tr>
-                        <th>Language</th>
-                        <td id="browserLanguage" class="textLeft"></td>
-                    </tr>
-                    <tr>
-                        <th>LIFF SDK Version</th>
-                        <td id="sdkVersion" class="textLeft"></td>
-                    </tr>
-                    <tr>
-                        <th>LINE Version</th>
-                        <td id="lineVersion" class="textLeft"></td>
-                    </tr>
-                    <tr>
-                        <th>isInClient</th>
-                        <td id="isInClient" class="textLeft"></td>
-                    </tr>
-                    <tr>
-                        <th>isLoggedIn</th>
-                        <td id="isLoggedIn" class="textLeft"></td>
-                    </tr>
-                </table>
-            </div>
-            <!-- LOGIN LOGOUT BUTTONS -->
-            <div class="buttonGroup">
-                <button id="liffLoginButton">Log in</button>
-                <button id="liffLogoutButton">Log out</button>
-            </div>
-            <div id="statusMessage">
-                <div id="isInClientMessage"></div>
-                <div id="apiReferenceMessage">
-                    <p>Available LIFF methods vary depending on the browser you use to open the LIFF app.</p>
-                    <p>Please refer to the <a href="https://developers.line.biz/en/reference/liff/#initialize-liff-app">API reference page</a> for more information.</p>
-                </div>
-            </div>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>私は仕事が大好きです。</title>
+    <style>
+        main > * { padding: 10px; }
+        header {background-color: palegreen; padding: 10px; }
+        main {background-color: lightblue; padding: 10px; }
+        footer {background-color: hotpink; padding: 10px; }
+        .flexbox {
+            display: flex;
+            flex-flow: column;
+        }
+        .flexbox-space-evenly {
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .flexbox-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+        button, input {
+            margin: 10px;
+        }
+    </style>
+    <script>
+const LIFF_ID = '1656336207-ZnlgDyVQ'
+const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbypIo6i5ud2Pmp1Qiy0LOifaGdAGjHnyWMIaBDaYdakzgrEMxQpvpnCmzwa4sUnZTfy/exec'
+    </script>
+  </head>
+  <body>
+    <div id="liffAppContent">
+
+    <header class="sticky-top flexbox-end">
+        <span class="user-name" style="margin:auto 10px;" id="user-name">
+            向坂 しげる
+        </span>
+        <div class="icon">
+            <img src="https://avatars.githubusercontent.com/u/8898432?v=4" class="rounded-circle" height="50px" id="icon">
         </div>
-        <!-- LIFF ID ERROR -->
-        <div id="liffIdErrorMessage" class="hidden">
-            <p>You have not assigned any value for LIFF ID.</p>
-            <p>If you are running the app using Node.js, please set the LIFF ID as an environment variable in your Heroku account follwing the below steps: </p>
-            <code id="code-block">
-                <ol>
-                    <li>Go to `Dashboard` in your Heroku account.</li>
-                    <li>Click on the app you just created.</li>
-                    <li>Click on `Settings` and toggle `Reveal Config Vars`.</li>
-                    <li>Set `MY_LIFF_ID` as the key and the LIFF ID as the value.</li>
-                    <li>Your app should be up and running. Enter the URL of your app in a web browser.</li>
-                </ol>
-            </code>
-            <p>If you are using any other platform, please add your LIFF ID in the <code>index.html</code> file.</p>
-            <p>For more information about how to add your LIFF ID, see <a href="https://developers.line.biz/en/reference/liff/#initialize-liff-app">Initializing the LIFF app</a>.</p>
+    </header>
+    <main class="flexbox">
+        <h2 id="question">
+        </h2>
+
+        <ul class="list-group" id="selector-list">
+        </ul>
+
+        <ul class="list-group d-none" id="add-selector-forms">
+            <input type="text" class="form-control" placeholder="選択肢" aria-label="選択肢">
+        </ul>
+
+        <button class="btn btn-primary d-none" id="add-selector-btn">選択肢を追加</button>
+        <button class="btn btn-primary" id="change-mode-btn">選択肢を追加する</button>
+    </main>
+    <footer class="fixed-bottom flexbox-space-evenly">
+        <button class="btn btn-primary" id="submit-btn">投票</button>
+    </footer>
+    </div>
+  
+  <!-- loading -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary m-5 spinner-grow-xl" role="status">
+            </div>
+          </div>
         </div>
-        <!-- LIFF INIT ERROR -->
-        <div id="liffInitErrorMessage" class="hidden">
-            <p>Something went wrong with LIFF initialization.</p>
-            <p>LIFF initialization can fail if a user clicks "Cancel" on the "Grant permission" screen, or if an error occurs in the process of <code>liff.init()</code>.</p>
-        </div>
-        <!-- NODE.JS LIFF ID ERROR -->
-        <div id="nodeLiffIdErrorMessage" class="hidden">
-            <p>Unable to receive the LIFF ID as an environment variable.</p>
-        </div>
-        <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="liff-starter.js"></script>
-    </body>
+      </div>
+    </div>
+  </div>
+  <!-- loading -->
+
+  <!-- for bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  <!-- for liff -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- for local liff -->
+  <script src="liff.js"></script>
+  <script>
+let mode = 'vote'
+let userId = ''
+
+window.onload = () => {
+    const changeModeButton = document.getElementById('change-mode-btn')
+    changeModeButton.addEventListener('click', switchMode)
+    const addSelectorButton = document.getElementById('add-selector-btn')
+    addSelectorButton.addEventListener('click', addSelector)
+    const submit = document.getElementById('submit-btn')
+    if(!questionId()) {
+        setQuestionMode()
+    } else {
+        fetchQuestion()
+        submit.addEventListener('click', submitVote)
+    }
+}
+
+const questionId = () => {
+    const url = new URL(location)
+    return url.searchParams.get("question")
+}
+
+const switchMode = () => {
+    const submit = document.getElementById('submit-btn')
+    if (mode === 'vote') {
+        mode = 'addSelector'
+        document.getElementById('selector-list').classList.add('d-none')
+        document.getElementById('add-selector-forms').classList.remove('d-none')
+        document.getElementById('add-selector-btn').classList.remove('d-none')
+        document.getElementById('change-mode-btn').innerText = '投票する'
+        submit.addEventListener('click', submitAddSelector)
+        submit.removeEventListener('click', submitVote)
+        submit.innerText = '追加'
+    } else if (mode === 'addSelector') {
+        mode = 'vote'
+        document.getElementById('selector-list').classList.remove('d-none')
+        document.getElementById('add-selector-forms').classList.add('d-none')
+        document.getElementById('add-selector-btn').classList.add('d-none')
+        document.getElementById('change-mode-btn').innerText = '選択肢を追加する'
+        submit.removeEventListener('click', submitAddSelector)
+        submit.addEventListener('click', submitVote)
+        submit.innerText = '投票'
+    }
+    console.log({mode})
+}
+
+const submitAddForm = async () => {
+    const question = document.getElementsByTagName('input')[0].value
+    if(question === '') {
+        alert('質問を追加してください')
+        return
+    }
+
+    // APIリクエストを行う
+    const response = await axios.get(`${REQUEST_URL}?type=addForm&question=${question}&userId=${userId}`)
+
+    if(response.data.status === 'ok') {
+        const url = new URL(location)
+        url.searchParams.append("question", response.data.questionId)
+        location = url
+    }
+}
+
+const submitAddSelector = async () => {
+    // 追加するselectorを定義する
+    const addSelectors = [...document.getElementsByTagName('input')]
+        .filter((input) => input.value !== '') // 空のinputを弾く
+        .map((input) => input.value) // 中の値を取得する
+
+    // APIリクエストを行う
+    const response = await axios.get(`${REQUEST_URL}?type=addSelector&questionId=${questionId()}&userId=${userId}&selectors=${JSON.stringify(addSelectors)}`)
+
+    if(response.data.status === 'ok') {
+        // formをクリアにする
+        document.getElementById('add-selector-forms').innerHTML = ''
+        addSelector()
+        // 選択肢を更新する
+        setSelector(response.data.selectors, response.data.votes)
+        // 投票モードに変更する
+        switchMode()
+    }
+}
+
+const submitVote = async () => {
+    // formから選択されている情報を取得する
+    const selectedSelectors = [...document.getElementById('selector-list').getElementsByClassName('active')].map((selector) => {
+        return selector.dataset.selectorId
+    })
+
+    // APIリクエストを行う
+    const response = await axios.get(`${REQUEST_URL}?type=vote&questionId=${questionId()}&userId=${userId}&selectorIds=${selectedSelectors.join(',')}`)
+
+    // 投票結果を表示する
+    if(response.data.status === 'ok') {
+        setSelector(response.data.selectors, response.data.votes)
+    }
+}
+
+const setQuestionMode = () => {
+    document.getElementById('question').innerText = '質問を追加'
+    document.getElementById('selector-list').classList.add('d-none')
+    document.getElementById('add-selector-forms').classList.remove('d-none')
+    document.getElementById('change-mode-btn').classList.add('d-none')
+    const submit = document.getElementById('submit-btn')
+    submit.innerText = '質問を登録'
+    submit.addEventListener('click', submitAddForm)
+    const ul = document.getElementById('add-selector-forms')
+    const newInput = document.createElement("input")
+    newInput.classList.add("form-control")
+    newInput.placeholder = '質問'
+    newInput.ariaLabel = '質問'
+    // 質問の場合追加項目は1つなので、既存のInputを消す
+    ul.innerHTML = ''
+    ul.appendChild(newInput)
+}
+
+const addSelector = () => {
+    const ul = document.getElementById('add-selector-forms')
+    const newInput = document.createElement("input")
+    newInput.classList.add("form-control")
+    newInput.placeholder = '選択肢'
+    newInput.ariaLabel = '選択肢'
+    ul.appendChild(newInput)
+}
+
+const clickLi = (event) => {
+    event.preventDefault()
+    event.currentTarget.classList.toggle('active')
+}
+
+const fetchQuestion = async () => {
+  $('#exampleModalCenter').modal('show')
+  const liffClient = await setLiffClient()
+  liffClient(async () => {
+      const profile = await liff.getProfile()
+      const response = await axios.get(`${REQUEST_URL}?type=topInfo&formInfoIndex=${questionId()}&userId=${profile.userId}`)
+      setSelector(response.data.selectors, response.data.votes)
+      setQuestion(response.data.question.question)
+      $('#exampleModalCenter').modal('hide')
+  })
+}
+// fetchQuestion()
+
+const setSelector = (selectors, voteQuery) => {
+    const votes = voteQuery.split(',')
+    const ul = document.getElementById('selector-list')
+    ul.innerHTML = ''
+
+    for (selector of selectors) {
+        const newLi = document.createElement("li")
+        newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
+        newLi.dataset.selectorId = selector.index
+        newLi.innerText = selector.selector
+        ul.appendChild(newLi)
+        // 投票済みか否かを判定する
+        if (votes[0] !== '') {
+            if (votes.includes(`${selector.index}`)) {
+                newLi.classList.add("active")
+            }
+            const newBadge = document.createElement("span")
+            newBadge.classList.add("badge", "bg-danger", "rounded-pill")
+            newBadge.innerHTML = selector.count
+            newLi.appendChild(newBadge)
+        } else {
+            newLi.classList.add("list-group-item-action")
+            newLi.addEventListener('click', clickLi)
+        }
+    }
+}
+
+const setQuestion = (question) => {
+    const ul = document.getElementById('question')
+    ul.innerText = question
+}
+
+const mock = () => {
+    question = '今日の天気は？'
+    selectors = [
+        {index: 2, selector: "晴れです", count: 1},
+        {index: 3, selector: "雨です", count: 0}
+    ]
+    setSelector(selectors, '')
+    setQuestion('今日の天気は？')
+}
+// mock()
+    </script>
+  </body>
 </html>
