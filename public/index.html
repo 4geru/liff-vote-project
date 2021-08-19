@@ -31,7 +31,7 @@
         }
     </style>
     <script>
-const LIFF_ID = '1656336207-ZnlgDyVQ'
+const LIFF_ID = '1656336459-JyXAjOdw'
 const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbypIo6i5ud2Pmp1Qiy0LOifaGdAGjHnyWMIaBDaYdakzgrEMxQpvpnCmzwa4sUnZTfy/exec'
     </script>
   </head>
@@ -175,6 +175,7 @@ const submitAddSelector = async () => {
 }
 
 const submitVote = async () => {
+    $('#exampleModalCenter').modal('show')
     // formから選択されている情報を取得する
     const selectedSelectors = [...document.getElementById('selector-list').getElementsByClassName('active')].map((selector) => {
         return selector.dataset.selectorId
@@ -185,7 +186,13 @@ const submitVote = async () => {
 
     // 投票結果を表示する
     if(response.data.status === 'ok') {
-        setSelector(response.data.selectors, response.data.votes)
+      setSelector(response.data.selectors, response.data.votes)
+      const liffClient = await setLiffClient()
+      liffClient(async () => {
+        const profile = await liff.getProfile()
+        await sendMessage(`${profile.displayName}が投票しました`)
+      })
+      $('#exampleModalCenter').modal('hide')
     }
 }
 

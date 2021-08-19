@@ -1,8 +1,6 @@
 window.addEventListener('load', async () => {
     const liffClient = await setLiffClient()
 
-    console.log(liffClient)
-    // liffClient(() => { console.log(liff.isLoggedIn()) })
     liffClient(() => { if(!liff.isLoggedIn())liff.login(); })
     getProfile(liffClient)
 });
@@ -19,4 +17,13 @@ const getProfile = async (liffClient) => {
             userId = profile.userId
         })
     })
+}
+
+const sendMessage = async (message) => {
+    await liff.sendMessages([{
+        'type': 'text',
+        'text': message
+    }]).catch((err) => {
+        document.getElementById('hote').innerHTML = err
+    });
 }
