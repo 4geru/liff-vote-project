@@ -234,14 +234,14 @@ const fetchQuestion = async () => {
   liffClient(async () => {
       const profile = await liff.getProfile()
       const response = await axios.get(`${REQUEST_URL}?type=topInfo&formInfoIndex=${questionId()}&userId=${profile.userId}`)
-      setSelector(response.data.selectors, response.data.votes)
+      setSelector(response.data.question.question, response.data.selectors, response.data.votes)
       setQuestion(response.data.question.question)
       $('#exampleModalCenter').modal('hide')
   })
 }
 // fetchQuestion()
 
-const setSelector = (selectors, voteQuery) => {
+const setSelector = async (question, selectors, voteQuery) => {
     const votes = voteQuery.split(',')
     const ul = document.getElementById('selector-list')
     ul.innerHTML = ''
@@ -265,6 +265,43 @@ const setSelector = (selectors, voteQuery) => {
             newLi.classList.add("list-group-item-action")
             newLi.addEventListener('click', clickLi)
         }
+    }
+
+    if (votes[0] !== '') {
+      const submit = document.getElementById('submit-btn')
+      submit.innerText = 'シェア'
+      submit.removeEventListener('click', submitAddSelector)
+      submit.removeEventListener('click', submitVote)
+      submit.addEventListener('click', () => {
+        const liffClient = setLiffClient()
+        liffClient(async () => {
+          const profile = await liff.getProfile()
+
+          liff.shareTargetPicker([
+            {
+              "type": "template",
+              "altText": "投票リクエストが送られました",
+              "template": {
+                  "type": "buttons",
+                  "imageAspectRatio": "rectangle",
+                  "imageSize": "cover",
+                  "imageBackgroundColor": "#FFFFFF",
+                  "title": "Menu",
+                  "text": `${profile.displayName}さんから「${question}」の投票リクエストが来ています`,
+                  "actions": [
+                      {
+                        "type": "uri",
+                        "label": "View detail",
+                        "uri": liff.permanentLink.createUrl()
+                      }
+                  ]
+              }
+            }
+          ])
+        })
+
+        console.log('hoge')
+      })
     }
 }
 
