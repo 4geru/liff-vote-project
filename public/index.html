@@ -272,11 +272,17 @@ const setSelector = async (question, selectors, voteQuery) => {
       submit.innerText = 'シェア'
       submit.removeEventListener('click', submitAddSelector)
       submit.removeEventListener('click', submitVote)
+
+      const liffClient = setLiffClient()
+      liffClient(async () => {
+        if (!liff.isApiAvailable('shareTargetPicker') || !liff.isInClient()) {
+          submit.classList.add('d-none')
+        }
+      })
       submit.addEventListener('click', () => {
         const liffClient = setLiffClient()
         liffClient(async () => {
           const profile = await liff.getProfile()
-
           liff.shareTargetPicker([
             {
               "type": "template",
@@ -286,12 +292,12 @@ const setSelector = async (question, selectors, voteQuery) => {
                   "imageAspectRatio": "rectangle",
                   "imageSize": "cover",
                   "imageBackgroundColor": "#FFFFFF",
-                  "title": "Menu",
+                  "title": "投票リクエスト",
                   "text": `${profile.displayName}さんから「${question}」の投票リクエストが来ています`,
                   "actions": [
                       {
                         "type": "uri",
-                        "label": "View detail",
+                        "label": "投票する",
                         "uri": liff.permanentLink.createUrl()
                       }
                   ]
