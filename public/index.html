@@ -32,7 +32,7 @@
     </style>
     <script>
 const LIFF_ID = '1656336459-JyXAjOdw'
-const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbypIo6i5ud2Pmp1Qiy0LOifaGdAGjHnyWMIaBDaYdakzgrEMxQpvpnCmzwa4sUnZTfy/exec'
+const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbxLpE3gbLF4i1e7-cOuvLLO1-A0rCfVdW3rUtCtpM3rH6Pu3H7tUkZIe8LlifP_AeXQ/exec'
     </script>
   </head>
   <body>
@@ -168,7 +168,7 @@ const submitAddSelector = async () => {
         document.getElementById('add-selector-forms').innerHTML = ''
         addSelector()
         // 選択肢を更新する
-        setSelector(response.data.selectors, response.data.votes)
+        setSelector(response.data.question, response.data.selectors, response.data.votes)
         // 投票モードに変更する
         switchMode()
     }
@@ -186,7 +186,7 @@ const submitVote = async () => {
 
     // 投票結果を表示する
     if(response.data.status === 'ok') {
-      setSelector(response.data.selectors, response.data.votes)
+      setSelector(response.data.question, response.data.selectors, response.data.votes)
       const liffClient = await setLiffClient()
       liffClient(async () => {
         const profile = await liff.getProfile()
@@ -315,17 +315,6 @@ const setQuestion = (question) => {
     const ul = document.getElementById('question')
     ul.innerText = question
 }
-
-const mock = () => {
-    question = '今日の天気は？'
-    selectors = [
-        {index: 2, selector: "晴れです", count: 1},
-        {index: 3, selector: "雨です", count: 0}
-    ]
-    setSelector(selectors, '')
-    setQuestion('今日の天気は？')
-}
-// mock()
     </script>
   </body>
 </html>
