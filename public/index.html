@@ -36,7 +36,7 @@
             <input type="text" class="form-control" placeholder="選択肢" aria-label="選択肢">
         </ul>
 
-        <button class="btn btn-secondary" id="change-mode-btn">選択肢を追加する</button>
+        <button class="btn btn-secondary d-none" id="change-mode-btn">選択肢を追加する</button>
         <button class="btn btn-primary d-none" id="add-selector-btn">選択肢を追加</button>
     </main>
     <footer class="fixed-bottom flexbox-space-evenly">
@@ -186,8 +186,10 @@ const submitVote = async () => {
       setSelector(response.data.question, response.data.selectors, response.data.votes)
       const liffClient = await setLiffClient()
       liffClient(async () => {
-        const profile = await liff.getProfile()
-        await sendMessage(`${profile.displayName}が投票しました`)
+        if(liff.isInClient()) {
+          const profile = await liff.getProfile()
+          await sendMessage(`${profile.displayName}が投票しました`)
+        }
       })
       $('#exampleModalCenter').modal('hide')
     }
@@ -229,39 +231,16 @@ const setSelector = async (question, selectors, voteQuery) => {
     ul.innerHTML = ''
 
     for (selector of selectors) {
-        const newLi = document.createElement("li")
-        newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
-        newLi.dataset.selectorId = selector.index
-        newLi.innerText = selector.selector
-        ul.appendChild(newLi)
-        // 投票済みか否かを判定する
-        if (votes[0] !== '') {
-            if (votes.includes(`${selector.index}`)) {
-                newLi.classList.add("active")
-            }
-            const newBadge = document.createElement("span")
-            newBadge.classList.add("badge", "bg-danger", "rounded-pill")
-            newBadge.innerHTML = selector.count
-            newLi.appendChild(newBadge)
-        } else {
-            newLi.classList.add("list-group-item-action")
-            newLi.addEventListener('click', clickLi)
-        }
+      const newLi = document.createElement("li")
+      newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
+      newLi.dataset.selectorId = selector.index
+      newLi.innerText = selector.selector
+      ul.appendChild(newLi)
     }
+    document.getElementById('change-mode-btn').classList.remove('d-none')
 
     if (votes[0] !== '') {
-      const submit = document.getElementById('submit-btn')
-      submit.innerText = 'シェア'
-      submit.removeEventListener('click', submitAddSelector)
-      submit.removeEventListener('click', submitVote)
-
-      const liffClient = setLiffClient()
-      liffClient(async () => {
-        if (!liff.isApiAvailable('shareTargetPicker') || !liff.isInClient()) {
-          submit.classList.add('d-none')
-        }
-      })
-      submit.addEventListener('click', submitShare)
+      setAnsweredMode(votes, selectors)
     }
 }
     </script>
