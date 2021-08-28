@@ -8,30 +8,11 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
-    <title>LIFF 総復習ハンズオン</title>
-    <style>
-        main > * { padding: 10px; }
-        header {background-color: #d2f4ea; padding: 10px; }
-        footer {background-color: #d2f4ea; padding: 10px; }
-        .flexbox {
-            display: flex;
-            flex-flow: column;
-        }
-        .flexbox-space-evenly {
-            display: flex;
-            justify-content: space-evenly;
-        }
-        .flexbox-end {
-            display: flex;
-            justify-content: flex-end;
-        }
-        button, input {
-            margin: 10px;
-        }
-    </style>
+    <title>LIFF 総復習ハンズオン</title><link rel="stylesheet" type="text/css" href="./style.css">
     <script>
-const LIFF_ID = '1656366061-NW6QopYe'
-const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbxLpE3gbLF4i1e7-cOuvLLO1-A0rCfVdW3rUtCtpM3rH6Pu3H7tUkZIe8LlifP_AeXQ/exec'
+      // 定数を定義する
+      const LIFF_ID = '1656366061-NW6QopYe'
+      const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbxLpE3gbLF4i1e7-cOuvLLO1-A0rCfVdW3rUtCtpM3rH6Pu3H7tUkZIe8LlifP_AeXQ/exec'
     </script>
   </head>
   <body>
@@ -63,20 +44,20 @@ const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbxLpE3gbLF4i1e7-cOu
     </footer>
     </div>
   
-  <!-- loading -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border text-primary m-5 spinner-grow-xl" role="status">
+    <!-- loading -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary m-5 spinner-grow-xl" role="status">
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- loading -->
+    <!-- loading -->
 
   <!-- for bootstrap -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
