@@ -74,38 +74,61 @@
   <script>
 let mode = 'vote'
 let userId = ''
-console.log({REQUEST_URL})
 
 window.onload = () => {
-    const changeModeButton = document.getElementById('change-mode-btn')
-    changeModeButton.addEventListener('click', switchMode)
-    const addSelectorButton = document.getElementById('add-selector-btn')
-    addSelectorButton.addEventListener('click', addSelectorEvent)
-    const submit = document.getElementById('submit-btn')
-    if(!questionId()) {
-        setQuestionMode()
-    } else {
-        fetchQuestion()
-        submit.addEventListener('click', submitVote)
+  if(!questionId()) {
+    setQuestionMode()
+  } else {
+    init()
+    fetchQuestion()
+  }
+}
+
+const init = () => {
+  const changeModeButton = document.getElementById('change-mode-btn')
+  changeModeButton.addEventListener('click', switchModeEvent)
+  const addSelectorButton = document.getElementById('add-selector-btn')
+  addSelectorButton.addEventListener('click', addSelectorEvent)
+  const submit = document.getElementById('submit-btn')
+  submit.addEventListener('click', submitVoteEvent)
+}
+
+const fetchQuestion = async () => {
+  $('#exampleModalCenter').modal('show')
+  const liffClient = await setLiffClient()
+  liffClient(async () => {
+    const profile = await liff.getProfile()
+    const response = await axios.get(`${REQUEST_URL}?type=topInfo&formInfoIndex=${questionId()}&userId=${profile.userId}`)
+
+    // アンケートのお題を登録する
+    const ul = document.getElementById('question')
+    ul.innerText = response.data.question.question
+
+    setSelector(response.data.question.question, response.data.selectors)
+    // 投票結果がある場合は、回答を表示する
+    if(response.data.votes !== '') {
+      setAnsweredMode(response.data.votes.split(','), response.data.selectors)
     }
+    $('#exampleModalCenter').modal('hide')
+  })
 }
 
-const questionId = () => {
-    const url = new URL(location)
-    return url.searchParams.get("question")
-}
+const setSelector = async (question, selectors) => {
+    const ul = document.getElementById('selector-list')
+    ul.innerHTML = ''
 
-const switchMode = () => {
-    if (mode === 'vote') {
-      setAddSelectorMode()
-      mode = 'addSelector'
-    } else if (mode === 'addSelector') {
-      setVoteMode()
-      mode = 'vote'
+    for (selector of selectors) {
+      const newLi = document.createElement("li")
+      newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
+      newLi.dataset.selectorId = selector.index
+      newLi.innerText = selector.selector
+      newLi.addEventListener('click', clickLiEvent)
+      ul.appendChild(newLi)
     }
+    document.getElementById('change-mode-btn').classList.remove('d-none')
 }
 
-const submitAddForm = async () => {
+const submitAddFormEvent = async () => {
     const question = document.getElementsByTagName('input')[0].value
     if(question === '') {
         alert('アンケートを追加してください')
@@ -122,7 +145,45 @@ const submitAddForm = async () => {
     }
 }
 
-const submitShare = () => {
+// === addEventListener events ===
+const submitVoteEvent = async () => {
+    $('#exampleModalCenter').modal('show')
+    // formから選択されている情報を取得する
+    const selectedSelectors = [...document.getElementById('selector-list').getElementsByClassName('active')].map((selector) => {
+        return selector.dataset.selectorId
+    })
+
+    // APIリクエストを行う
+    const response = await axios.get(`${REQUEST_URL}?type=vote&questionId=${questionId()}&userId=${userId}&selectorIds=${selectedSelectors.join(',')}`)
+
+    // 投票結果を表示する
+    if(response.data.status === 'ok') {
+      // 投票結果を表示する
+      setAnsweredMode(response.data.votes.split(','), response.data.selectors)
+      // 投票したことをLINEメッセージで送る
+      const liffClient = await setLiffClient()
+      liffClient(async () => {
+        // LINE の inbrowser でない場合はメッセージが送れない
+        if(liff.isInClient()) {
+          const profile = await liff.getProfile()
+          await sendMessage(`${profile.displayName}が投票しました`)
+        }
+      })
+      $('#exampleModalCenter').modal('hide')
+    }
+}
+
+const switchModeEvent = () => {
+    if (mode === 'vote') {
+      setAddSelectorMode()
+      mode = 'addSelector'
+    } else if (mode === 'addSelector') {
+      setVoteMode()
+      mode = 'vote'
+    }
+}
+
+const submitShareEvent = () => {
   const liffClient = setLiffClient()
   liffClient(async () => {
     const profile = await liff.getProfile()
@@ -139,11 +200,11 @@ const submitShare = () => {
             "title": "アンケートリクエスト",
             "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
             "actions": [
-                {
-                  "type": "uri",
-                  "label": "投票する",
-                  "uri": liff.permanentLink.createUrl()
-                }
+              {
+                "type": "uri",
+                "label": "投票する",
+                "uri": liff.permanentLink.createUrl()
+              }
             ]
         }
       }
@@ -151,7 +212,8 @@ const submitShare = () => {
   })
 }
 
-const submitAddSelector = async () => {
+const submitAddSelectorEvent = async () => {
+    $('#exampleModalCenter').modal('show')
     // 追加するselectorを定義する
     const addSelectors = [...document.getElementsByTagName('input')]
         .filter((input) => input.value !== '') // 空のinputを弾く
@@ -160,39 +222,7 @@ const submitAddSelector = async () => {
     // APIリクエストを行う
     const response = await axios.get(`${REQUEST_URL}?type=addSelector&questionId=${questionId()}&userId=${userId}&selectors=${JSON.stringify(addSelectors)}`)
 
-    if(response.data.status === 'ok') {
-        // formをクリアにする
-        document.getElementById('add-selector-forms').innerHTML = ''
-        addSelectorEvent()
-        // 選択肢を更新する
-        setSelector(response.data.question, response.data.selectors, response.data.votes)
-        // 投票モードに変更する
-        location.reload()
-    }
-}
-
-const submitVote = async () => {
-    $('#exampleModalCenter').modal('show')
-    // formから選択されている情報を取得する
-    const selectedSelectors = [...document.getElementById('selector-list').getElementsByClassName('active')].map((selector) => {
-        return selector.dataset.selectorId
-    })
-
-    // APIリクエストを行う
-    const response = await axios.get(`${REQUEST_URL}?type=vote&questionId=${questionId()}&userId=${userId}&selectorIds=${selectedSelectors.join(',')}`)
-
-    // 投票結果を表示する
-    if(response.data.status === 'ok') {
-      setSelector(response.data.question, response.data.selectors, response.data.votes)
-      const liffClient = await setLiffClient()
-      liffClient(async () => {
-        if(liff.isInClient()) {
-          const profile = await liff.getProfile()
-          await sendMessage(`${profile.displayName}が投票しました`)
-        }
-      })
-      $('#exampleModalCenter').modal('hide')
-    }
+    location.reload()
 }
 
 const addSelectorEvent = () => {
@@ -204,44 +234,15 @@ const addSelectorEvent = () => {
     ul.appendChild(newInput)
 }
 
-const clickLi = (event) => {
+const clickLiEvent = (event) => {
     event.preventDefault()
     event.currentTarget.classList.toggle('active')
 }
 
-const fetchQuestion = async () => {
-  $('#exampleModalCenter').modal('show')
-  const liffClient = await setLiffClient()
-  liffClient(async () => {
-      const profile = await liff.getProfile()
-      const response = await axios.get(`${REQUEST_URL}?type=topInfo&formInfoIndex=${questionId()}&userId=${profile.userId}`)
-
-      // アンケートのお題を登録する
-      const ul = document.getElementById('question')
-      ul.innerText = response.data.question.question
-
-      setSelector(response.data.question.question, response.data.selectors, response.data.votes)
-      $('#exampleModalCenter').modal('hide')
-  })
-}
-
-const setSelector = async (question, selectors, voteQuery) => {
-    const votes = voteQuery.split(',')
-    const ul = document.getElementById('selector-list')
-    ul.innerHTML = ''
-
-    for (selector of selectors) {
-      const newLi = document.createElement("li")
-      newLi.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center")
-      newLi.dataset.selectorId = selector.index
-      newLi.innerText = selector.selector
-      ul.appendChild(newLi)
-    }
-    document.getElementById('change-mode-btn').classList.remove('d-none')
-
-    if (votes[0] !== '') {
-      setAnsweredMode(votes, selectors)
-    }
+// === library ===
+const questionId = () => {
+    const url = new URL(location)
+    return url.searchParams.get("question")
 }
     </script>
   </body>

@@ -4,8 +4,8 @@ const setAddSelectorMode = () => {
     document.getElementById('add-selector-forms').classList.remove('d-none')
     document.getElementById('add-selector-btn').classList.remove('d-none')
     document.getElementById('change-mode-btn').innerText = '投票する'
-    submit.addEventListener('click', submitAddSelector)
-    submit.removeEventListener('click', submitVote)
+    submit.addEventListener('click', submitAddSelectorEvent)
+    submit.removeEventListener('click', submitVoteEvent)
     submit.innerText = '追加'
 }
 
@@ -16,7 +16,7 @@ const setQuestionMode = () => {
     document.getElementById('change-mode-btn').classList.add('d-none')
     const submit = document.getElementById('submit-btn')
     submit.innerText = 'アンケートを登録'
-    submit.addEventListener('click', submitAddForm)
+    submit.addEventListener('click', submitAddFormEvent)
     const ul = document.getElementById('add-selector-forms')
     const newInput = document.createElement("input")
     newInput.classList.add("form-control")
@@ -32,8 +32,8 @@ const setVoteMode = () => {
     document.getElementById('add-selector-forms').classList.add('d-none')
     document.getElementById('add-selector-btn').classList.add('d-none')
     document.getElementById('change-mode-btn').innerText = '選択肢を追加する'
-    submit.removeEventListener('click', submitAddSelector)
-    submit.addEventListener('click', submitVote)
+    submit.removeEventListener('click', submitAddSelectorEvent)
+    submit.addEventListener('click', submitVoteEvent)
     submit.innerText = '投票'
 }
 
@@ -57,8 +57,8 @@ const setAnsweredMode = (votes, selectors) => {
     // === submitボタンの表示 ===
     const submit = document.getElementById('submit-btn')
     submit.innerText = 'シェア'
-    submit.removeEventListener('click', submitAddSelector)
-    submit.removeEventListener('click', submitVote)
+    submit.removeEventListener('click', submitAddSelectorEvent)
+    submit.removeEventListener('click', submitVoteEvent)
 
     submit.classList.add('d-none')
     const liffClient = setLiffClient()
@@ -66,7 +66,7 @@ const setAnsweredMode = (votes, selectors) => {
         // 「LIFF が開ける && share target Picker が使える状態」 の場合に シェアボタンを表示する
         if (liff.isApiAvailable('shareTargetPicker') && liff.isInClient()) {
             submit.classList.remove('d-none')
-            submit.addEventListener('click', submitShare)
+            submit.addEventListener('click', submitShareEvent)
         }
     })
 }
