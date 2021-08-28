@@ -69,15 +69,18 @@
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <!-- for local liff -->
   <script src="liff.js"></script>
+  <script src="mode.js"></script>
+  <script src="index.js"></script>
   <script>
 let mode = 'vote'
 let userId = ''
+console.log({REQUEST_URL})
 
 window.onload = () => {
     const changeModeButton = document.getElementById('change-mode-btn')
     changeModeButton.addEventListener('click', switchMode)
     const addSelectorButton = document.getElementById('add-selector-btn')
-    addSelectorButton.addEventListener('click', addSelector)
+    addSelectorButton.addEventListener('click', addSelectorEvent)
     const submit = document.getElementById('submit-btn')
     if(!questionId()) {
         setQuestionMode()
@@ -93,27 +96,13 @@ const questionId = () => {
 }
 
 const switchMode = () => {
-    const submit = document.getElementById('submit-btn')
     if (mode === 'vote') {
-        mode = 'addSelector'
-        document.getElementById('selector-list').classList.add('d-none')
-        document.getElementById('add-selector-forms').classList.remove('d-none')
-        document.getElementById('add-selector-btn').classList.remove('d-none')
-        document.getElementById('change-mode-btn').innerText = '投票する'
-        submit.addEventListener('click', submitAddSelector)
-        submit.removeEventListener('click', submitVote)
-        submit.innerText = '追加'
+      setAddSelectorMode()
+      mode = 'addSelector'
     } else if (mode === 'addSelector') {
-        mode = 'vote'
-        document.getElementById('selector-list').classList.remove('d-none')
-        document.getElementById('add-selector-forms').classList.add('d-none')
-        document.getElementById('add-selector-btn').classList.add('d-none')
-        document.getElementById('change-mode-btn').innerText = '選択肢を追加する'
-        submit.removeEventListener('click', submitAddSelector)
-        submit.addEventListener('click', submitVote)
-        submit.innerText = '投票'
+      setVoteMode()
+      mode = 'vote'
     }
-    console.log({mode})
 }
 
 const submitAddForm = async () => {
@@ -145,7 +134,7 @@ const submitAddSelector = async () => {
     if(response.data.status === 'ok') {
         // formをクリアにする
         document.getElementById('add-selector-forms').innerHTML = ''
-        addSelector()
+        addSelectorEvent()
         // 選択肢を更新する
         setSelector(response.data.question, response.data.selectors, response.data.votes)
         // 投票モードに変更する
@@ -175,25 +164,7 @@ const submitVote = async () => {
     }
 }
 
-const setQuestionMode = () => {
-    document.getElementById('question').innerText = 'アンケートを追加'
-    document.getElementById('selector-list').classList.add('d-none')
-    document.getElementById('add-selector-forms').classList.remove('d-none')
-    document.getElementById('change-mode-btn').classList.add('d-none')
-    const submit = document.getElementById('submit-btn')
-    submit.innerText = 'アンケートを登録'
-    submit.addEventListener('click', submitAddForm)
-    const ul = document.getElementById('add-selector-forms')
-    const newInput = document.createElement("input")
-    newInput.classList.add("form-control")
-    newInput.placeholder = 'アンケート'
-    newInput.ariaLabel = 'アンケート'
-    // アンケートの場合追加項目は1つなので、既存のInputを消す
-    ul.innerHTML = ''
-    ul.appendChild(newInput)
-}
-
-const addSelector = () => {
+const addSelectorEvent = () => {
     const ul = document.getElementById('add-selector-forms')
     const newInput = document.createElement("input")
     newInput.classList.add("form-control")
@@ -213,12 +184,15 @@ const fetchQuestion = async () => {
   liffClient(async () => {
       const profile = await liff.getProfile()
       const response = await axios.get(`${REQUEST_URL}?type=topInfo&formInfoIndex=${questionId()}&userId=${profile.userId}`)
+
+      // アンケートのお題を登録する
+      const ul = document.getElementById('question')
+      ul.innerText = response.data.question.question
+
       setSelector(response.data.question.question, response.data.selectors, response.data.votes)
-      setQuestion(response.data.question.question)
       $('#exampleModalCenter').modal('hide')
   })
 }
-// fetchQuestion()
 
 const setSelector = async (question, selectors, voteQuery) => {
     const votes = voteQuery.split(',')
@@ -262,17 +236,18 @@ const setSelector = async (question, selectors, voteQuery) => {
         const liffClient = setLiffClient()
         liffClient(async () => {
           const profile = await liff.getProfile()
+          const question = document.getElementById('question').innerText
           liff.shareTargetPicker([
             {
               "type": "template",
-              "altText": "投票リクエストが送られました",
+              "altText": "アンケートリクエストが送られました",
               "template": {
                   "type": "buttons",
                   "imageAspectRatio": "rectangle",
                   "imageSize": "cover",
                   "imageBackgroundColor": "#FFFFFF",
-                  "title": "投票リクエスト",
-                  "text": `${profile.displayName}さんから「${question}」の投票リクエストが来ています`,
+                  "title": "アンケートリクエスト",
+                  "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
                   "actions": [
                       {
                         "type": "uri",
@@ -288,11 +263,6 @@ const setSelector = async (question, selectors, voteQuery) => {
         console.log('hoge')
       })
     }
-}
-
-const setQuestion = (question) => {
-    const ul = document.getElementById('question')
-    ul.innerText = question
 }
     </script>
   </body>
