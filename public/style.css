@@ -1,4 +1,3 @@
-main > * { padding: 10px; }
 main { padding: 20px; }
 header {background-color: #d2f4ea; padding: 10px; }
 footer {background-color: #d2f4ea; padding: 10px; }
@@ -14,6 +13,9 @@ footer {background-color: #d2f4ea; padding: 10px; }
     display: flex;
     justify-content: flex-end;
 }
-button, input {
+button {
+    margin-top: 10px;
+}
+ul {
     margin: 10px;
 }
