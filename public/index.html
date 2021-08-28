@@ -122,6 +122,35 @@ const submitAddForm = async () => {
     }
 }
 
+const submitShare = () => {
+  const liffClient = setLiffClient()
+  liffClient(async () => {
+    const profile = await liff.getProfile()
+    const question = document.getElementById('question').innerText
+    liff.shareTargetPicker([
+      {
+        "type": "template",
+        "altText": "アンケートリクエストが送られました",
+        "template": {
+            "type": "buttons",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "アンケートリクエスト",
+            "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
+            "actions": [
+                {
+                  "type": "uri",
+                  "label": "投票する",
+                  "uri": liff.permanentLink.createUrl()
+                }
+            ]
+        }
+      }
+    ])
+  })
+}
+
 const submitAddSelector = async () => {
     // 追加するselectorを定義する
     const addSelectors = [...document.getElementsByTagName('input')]
@@ -232,36 +261,7 @@ const setSelector = async (question, selectors, voteQuery) => {
           submit.classList.add('d-none')
         }
       })
-      submit.addEventListener('click', () => {
-        const liffClient = setLiffClient()
-        liffClient(async () => {
-          const profile = await liff.getProfile()
-          const question = document.getElementById('question').innerText
-          liff.shareTargetPicker([
-            {
-              "type": "template",
-              "altText": "アンケートリクエストが送られました",
-              "template": {
-                  "type": "buttons",
-                  "imageAspectRatio": "rectangle",
-                  "imageSize": "cover",
-                  "imageBackgroundColor": "#FFFFFF",
-                  "title": "アンケートリクエスト",
-                  "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
-                  "actions": [
-                      {
-                        "type": "uri",
-                        "label": "投票する",
-                        "uri": liff.permanentLink.createUrl()
-                      }
-                  ]
-              }
-            }
-          ])
-        })
-
-        console.log('hoge')
-      })
+      submit.addEventListener('click', submitShare)
     }
 }
     </script>
