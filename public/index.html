@@ -38,12 +38,11 @@ const REQUEST_URL = 'https://script.google.com/macros/s/AKfycbxLpE3gbLF4i1e7-cOu
   <body>
     <div id="liffAppContent">
 
-    <header class="sticky-top flexbox-end">
+    <header class="sticky-top flexbox-end" style="height: 65px;">
         <span class="user-name" style="margin:auto 10px;" id="user-name">
-            向坂 しげる
         </span>
         <div class="icon">
-            <img src="https://avatars.githubusercontent.com/u/8898432?v=4" class="rounded-circle" height="50px" id="icon">
+            <img src="" class="rounded-circle" height="50px" id="icon">
         </div>
     </header>
     <main class="flexbox">
@@ -170,7 +169,7 @@ const submitAddSelector = async () => {
         // 選択肢を更新する
         setSelector(response.data.question, response.data.selectors, response.data.votes)
         // 投票モードに変更する
-        switchMode()
+        location.reload()
     }
 }
 
