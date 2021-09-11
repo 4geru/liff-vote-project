@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "zenn": "npx zenn preview"
   },
   "repository": {
     "type": "git",
@@ -13,7 +14,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "zenn-cli": "^0.1.95"
   },
   "engines": {
     "node": "10.x"

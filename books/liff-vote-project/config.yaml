@@ -1,0 +1,10 @@
+title: "【REV UP2021総復習】LIFFでサーバレスなアンケートアプリを作ってみよう【ハンズオン】"
+summary: "事前準備不要！ブラウザだけでLIFFをまるっと学べる！"
+topics: ["markdown", "zenn", "react"] # トピック（5つまで）
+published: false # falseだと下書き
+price: 0 # 有料の場合200〜5000
+chapters:
+  - 01-input
+  - 02-about-application
+  - 03-setup
+  - 04-hands-on
