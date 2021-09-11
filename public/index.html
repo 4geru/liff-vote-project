@@ -165,7 +165,12 @@ const submitVoteEvent = async () => {
         // LINE の inbrowser でない場合はメッセージが送れない
         if(liff.isInClient()) {
           const profile = await liff.getProfile()
-          await sendMessage(`${profile.displayName}が投票しました`)
+          await sendMessage([
+              {
+                'type': 'text',
+                'text': `${profile.displayName}が投票しました`
+            }
+          ])
         }
       })
       $('#exampleModalCenter').modal('hide')
@@ -192,19 +197,19 @@ const submitShareEvent = () => {
         "type": "template",
         "altText": "アンケートリクエストが送られました",
         "template": {
-            "type": "buttons",
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover",
-            "imageBackgroundColor": "#FFFFFF",
-            "title": "アンケートリクエスト",
-            "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
-            "actions": [
-              {
-                "type": "uri",
-                "label": "投票する",
-                "uri": liff.permanentLink.createUrl()
-              }
-            ]
+          "type": "buttons",
+          "imageAspectRatio": "rectangle",
+          "imageSize": "cover",
+          "imageBackgroundColor": "#FFFFFF",
+          "title": "アンケートリクエスト",
+          "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
+          "actions": [
+            {
+              "type": "uri",
+              "label": "投票する",
+              "uri": liff.permanentLink.createUrl()
+            }
+          ]
         }
       }
     ])

@@ -19,11 +19,8 @@ const getProfile = async (liffClient) => {
     })
 }
 
-const sendMessage = async (message) => {
-    await liff.sendMessages([{
-        'type': 'text',
-        'text': message
-    }]).catch((err) => {
+const sendMessage = async (messages) => {
+    await liff.sendMessages(messages).catch((err) => {
         document.getElementById('hote').innerHTML = err
     });
 }

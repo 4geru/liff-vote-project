@@ -2,9 +2,6 @@
 title: "ハンズオン"
 ---
 ## 今回のプロジェクトについて
-<!-- TODO remove public/index.js public/liff-starter.js -->
-<!-- TODO: githubのLIFF_ID, REQUEST_URL の名前を変える -->
-
 ### 利用しているLIFFの機能
 
 - liff.login()
@@ -13,16 +10,28 @@ title: "ハンズオン"
 - liff.isInClient(), liff.isLoggedIn()
 
 ### ファイル構成
+今回は `./public` 以下のファイルを触っていきます
 
-- /public/index.html → メインのファイル
-- /public/liff.js → liff 固有の関数達
-- /public/mode.js → モード切り替え
+- `./public/index.html` → メインのファイル
+- `./public/liff.js` → liff 固有の関数達
+- `./public/mode.js` → モード切り替え
 
 ## LINE Login をみてみよう
 
-/public/liff.js の、liff.login() で LINE ログインをしています。setLiffClient で、liff.init をオーバーラップすることで、引数の function の中で、 liff が使えるようにしています。
+`./public/liff.js` の、liff.login() で LINE ログインをしています。setLiffClient で、liff.init をオーバーラップすることで、引数の function の中で、 liff が使えるようにしています。
 
-![](/images/books/liff-vote-project/04-hands-on/line-login-sample.png)
+```javascript:./public/liff.js
+window.addEventListener('load', async () => {
+    const liffClient = await setLiffClient()
+
+    liffClient(() => { if(!liff.isLoggedIn())liff.login(); })
+    getProfile(liffClient)
+});
+
+const setLiffClient = () => {
+    return (func) => { liff.init({ liffId: LIFF_ID }).then(func) }
+}
+```
 
 ## 投票後のメッセージを変更してみよう
 
@@ -35,4 +44,33 @@ message以外にもsticky, image を送れるように拡張しやすくする
 1. text に送信者の名前を表示してみる
 2. template を Button から FlexMessage に変更してみよう
 
-![](/images/books/liff-vote-project/04-hands-on/share-target-picker.png)
+```javascript:./public/index.html
+const submitShareEvent = () => {
+  const liffClient = setLiffClient()
+  liffClient(async () => {
+    const profile = await liff.getProfile()
+    const question = document.getElementById('question').innerText
+    liff.shareTargetPicker([
+      {
+        "type": "template",
+        "altText": "アンケートリクエストが送られました",
+        "template": {
+            "type": "buttons",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "アンケートリクエスト",
+            "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
+            "actions": [
+              {
+                "type": "uri",
+                "label": "投票する",
+                "uri": liff.permanentLink.createUrl()
+              }
+            ]
+        }
+      }
+    ])
+  })
+}
+```
