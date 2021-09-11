@@ -16,21 +16,33 @@ Githubからログインし、プロジェクトを作成します
 
 ## spreadsheetの作成
 
-[spread sheet]([https://docs.google.com/spreadsheets/u/1/d/1gkb9pAB6qb9KdwxelH0kMtZev1XwDJa9qQtav50FUXE/copy](https://docs.google.com/spreadsheets/u/1/d/1gkb9pAB6qb9KdwxelH0kMtZev1XwDJa9qQtav50FUXE/copy)) からシートをコピーします
+[spread sheet](https://docs.google.com/spreadsheets/u/1/d/1gkb9pAB6qb9KdwxelH0kMtZev1XwDJa9qQtav50FUXE/copy) からシートをコピーします
 
 ツール > スクリプトエディタ でスクリプトエディタを開きます。
 
+:::message
+googleに複数ログインしたでは、script editorを開けない場合があります
+:::
+
 ![](/images/books/liff-vote-project/03-setup/spread-sheet-setup.png)
 
-<!-- // TODO: 初回は認証の話がある -->
+初回アクセスの場合は、アプリを承認する必要があるので、承認をします。
 
-コピーで作成したシートのURLを `SHEET_URL` に貼り付け、デプロイをします。
+![](/images/books/liff-vote-project/03-setup/google-spread-sheet-first-deploy-access.png =450x)
 
-初回は、デプロイ > 新しいデプロイ > デプロイ を押し、 `ウェブアプリURL` をコピーします
+`アクセス承認` を押すと 安全ではないページ にリンクが飛びますが、アクセスし許可をします。
 
+![](/images/books/liff-vote-project/03-setup/google-spread-sheet-first-deploy-not-allowed-url.png =450x)
+
+コピーで作成したシートのURLを `REQUEST_URL` に貼り付け、デプロイをします。
+
+![](/images/books/liff-vote-project/03-setup/google-spread-sheet-first-deploy-after-page.png =450x)
+
+:::message
 2回目以降は、デプロイ > デプロイ管理 > 📝 から バージョンを新しいバージョンに変更し、デプロイをします。
+:::
 
-<!-- // TODO: 説明を入れる -->
+コピーした `REQUEST_URL` は Gitpod の `./public/index.html` の 15行目に貼り付けます。
 
 ![](/images/books/liff-vote-project/03-setup/set-variable-for-request-url.png)
 
@@ -38,7 +50,9 @@ Githubからログインし、プロジェクトを作成します
 
 [LINE Developers]([https://developers.line.biz/console/](https://developers.line.biz/console/)) からLINEの設定をしていきます
 
+:::message
 新規の方は、LINE Providerを作成。LINE Providerが既にある方は、LINE Loginを作成します。
+:::
 
 ![](/images/books/liff-vote-project/03-setup/create-liff-project.png)
 
@@ -49,8 +63,14 @@ Githubからログインし、プロジェクトを作成します
 
 ![](/images/books/liff-vote-project/03-setup/set-variable-for-liff-id.png)
 
+<!-- TODO: 書く -->
+
 ## サンプルプログラムが動くかを確認
 
 LIFF URL を LINE にコピーし、モバイルから起動します。モバイルのLINEブラウザでのみ動くコードがあるので、気をつけてください。
 
 一度アンケートの登録 → 回答 → シェア まで動くか確かめてみましょう
+
+:::message
+ローディング中はくるくる状態になりますが、お待ちください
+:::
