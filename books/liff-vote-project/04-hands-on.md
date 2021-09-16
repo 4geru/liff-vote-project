@@ -92,7 +92,7 @@ await sendMessage([
     'text': `${profile.displayName}が投票しました`
   },
   {
-  "type": "sticker",
+    "type": "sticker",
     "packageId": "11537",
     "stickerId": "52002735"
   }

@@ -19,6 +19,9 @@ Google Chromeにて、[gitpod]([https://chrome.google.com/webstore/detail/gitpod
 Githubからログインし、プロジェクトを作成します
 
 ```shell
+# npm のバージョンを上げます
+npm install -g npm
+# 今回の開発に必要なパッケージをインストールします
 npm install
 npm run start
 ```
@@ -38,8 +41,6 @@ npm run start
 
 ### LIFF の作成
 LINE Loginのアカウントを作成したら、 `LIFF` > `ログイン` を選択し、LIFFの情報を記述していきます。
-
-![](/images/books/liff-vote-project/03-setup/create-liff-app.png)
 
 ```text
 LIFFアプリ名: アンケートアプリ
@@ -71,13 +72,17 @@ LIFF URL は LINE のチャットに貼り付けます。
 ツール > スクリプトエディタ でスクリプトエディタを開きます。
 
 :::message
-googleに複数ログインしたでは、script editorを開けない場合があります。
-一度アカウントをログアウトしていただくと解消できる可能性があります。
+- googleに複数ログインしたでは、script editorを開けない場合があります。
+- 一度アカウントをログアウトしていただくと解消できる可能性があります。
 :::
 
-スクリプトエディタを開いたら、コピーしたシートのURLを `SHEET_URL` に貼り付けます。
+スクリプトエディタを開いたら、コピーしたGoogle Spread SheetのURLを `SHEET_URL` に貼り付けます。
 
 ![](/images/books/liff-vote-project/03-setup/spread-sheet-setup.png)
+
+:::message
+- Google Apps Script の URL ではなく Spread Sheet の URL です
+:::
 
 初回アクセスの場合は、アプリを承認する必要があるので、承認をします。
 
@@ -92,7 +97,7 @@ googleに複数ログインしたでは、script editorを開けない場合が�
 ![](/images/books/liff-vote-project/03-setup/google-spread-sheet-first-deploy-after-page.png =450x)
 
 :::message
-2回目以降は、デプロイ > デプロイ管理 > 📝 から バージョンを新しいバージョンに変更し、デプロイをします。
+- 2回目以降は、デプロイ > デプロイ管理 > 📝 から バージョンを新しいバージョンに変更し、デプロイをします。
 :::
 
 コピーした `REQUEST_URL` は Gitpod の `./public/index.html` の 15行目に貼り付けます。
