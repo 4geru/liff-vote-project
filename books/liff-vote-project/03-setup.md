@@ -16,7 +16,13 @@ Google Chromeにて、[gitpod]([https://chrome.google.com/webstore/detail/gitpod
 - 月の利用上限が50時間までです。
 :::
 
-Githubからログインし、プロジェクトを作成します
+Githubからログインし、プロジェクトを作成します。
+
+---
+
+ログインが成功すると、下記のようなページが開きます。Terminal からコマンドを実行してサーバーを起動します。
+
+![](/images/books/liff-vote-project/03-setup/gitpod-open.png)
 
 ```shell
 # npm のバージョンを上げます
@@ -26,7 +32,13 @@ npm install
 npm run start
 ```
 
-開いたURLをコピーして、 LINE の LIFF URL に登録します。
+---
+
+サーバーの起動が完了したら、左のタブから公開設定を `public` にし、ブラウザを開きます。
+
+![](/images/books/liff-vote-project/03-setup/gitpod-open-window.png)
+
+開いたページのURLをコピーして、 LINE の LIFF URL に登録します。
 
 ## LINE の設定
 
@@ -65,6 +77,12 @@ LIFF URL は LINE のチャットに貼り付けます。
     </script>
 ```
 
+LIFF を活用するために、以下の2つの設定が必要になる
+- LIFF App を公開する。公開すると他の人もアンケートに答えられる。お試しの場合は開発モードでもテスト可能。
+- [シェアターゲットピッカー](https://developers.line.biz/ja/reference/liff/#share-target-picker)を有効にする
+
+![](/images/books/liff-vote-project/03-setup/other-liff-settings.png)
+
 ## spreadsheetの作成
 
 [spread sheet](https://docs.google.com/spreadsheets/u/1/d/1gkb9pAB6qb9KdwxelH0kMtZev1XwDJa9qQtav50FUXE/copy) からシートをコピーします
@@ -97,6 +115,7 @@ LIFF URL は LINE のチャットに貼り付けます。
 ![](/images/books/liff-vote-project/03-setup/google-spread-sheet-first-deploy-after-page.png =450x)
 
 :::message
+- デプロイするときは、必ず保存を押してからデプロイを実行してください。
 - 2回目以降は、デプロイ > デプロイ管理 > 📝 から バージョンを新しいバージョンに変更し、デプロイをします。
 :::
 
@@ -117,7 +136,21 @@ LIFF URL を LINE にコピーし、モバイルから起動します。モバ�
 一度アンケートの登録 → 回答 → シェア まで動くか確かめてみましょう
 
 :::message
-- シェアは、 LINE の browser のみ利用できます。
+- LINE の browser のみでしか動かない API があります
 - ローディング中はくるくる状態になりますが、お待ちください
 - 期待通り動かない場合は、コピー間違いなどを確認してください
 :::
+
+
+## アンケート途中の画面に戻る方法
+アンケート解答後に、解答メッセージとアンケートの URL がアクセス元の LINE 画面に表示されます。
+Google Spread Sheet の `FormSelecteds` の情報を消すことで、アンケート結果を消すことができます。
+
+![](/images/books/liff-vote-project/03-setup/reset-google-spread-sheet.png =450x)
+
+:::message
+- ハンズオンで、アンケート解答後の状態に戻りたいときにご利用ください
+:::
+
+## ☕️ 🍰 ここまでできたらひと休憩 ☕️ 🍰
+シェアボタンを押すとツイートボタンがあるので、ツイートしましょう！！
