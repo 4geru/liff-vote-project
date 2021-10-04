@@ -128,7 +128,7 @@ const submitShareEvent = () => {
   })
 }
 
-const buttonMessage = (question) => {
+const buttonMessage = async (question) => {
   const profile = await liff.getProfile()
   return {
     "type": "template",
