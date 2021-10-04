@@ -227,7 +227,6 @@ const buttonMessage = (question) => {
 ## ☕️ 🍰 ここまでできたらひと休憩 ☕️ 🍰
 ここまでの感想をツイートしてみましょう！
 
-
 ### 05. template を Button から [FlexMessage](https://developers.line.biz/ja/docs/messaging-api/using-flex-messages/#sending-hello-world) に変更してみよう
 Button Message では、PC版では、「スマートフォンでのみ確認可能なメッセージです。」と表示されます。
 しかし、FlexMessageを使うことで、PC版でも確認することができます。

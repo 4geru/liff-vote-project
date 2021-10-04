@@ -8,6 +8,13 @@ title: "LIFFについて"
 
 公式：[ドキュメント > LINE Front-end Framework > LINE Front-end Framework](https://developers.line.biz/ja/docs/liff/overview/)
 
+- ブラウザでLINEの機能が使えるフレームワークです。
+  - ユーザー情報
+  - OS/言語情報 等
+  - Botとの友達情報
+  - メッセージ送信（LINE内ブラウザのみ）
+  - QRスキャン（LINE内ブラウザのみ）
+
 ## APIについて
 
 [LIFFブラウザ](https://developers.line.biz/ja/docs/liff/overview/#liff-browser) と [外部ブラウザ](https://developers.line.biz/ja/glossary/#external-browser) で使える機能が変わります。

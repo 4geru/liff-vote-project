@@ -4,7 +4,7 @@ title: "環境構築"
 
 ## GitPodの拡張の導入
 
-Google Chromeにて、[gitpod]([https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki)) の拡張を追加します。
+Google Chromeにて、[gitpod](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki) の拡張を追加します。
 
 ## GitPodの追加
 
@@ -36,7 +36,8 @@ npm run start
 
 サーバーの起動が完了したら、左のタブから公開設定を `public` にし、ブラウザを開きます。
 
-![](/images/books/liff-vote-project/03-setup/gitpod-open-window.png)
+![](/images/books/liff-vote-project/03-setup/check-gitlab-setting.png =250x)
+<!-- ![](/images/books/liff-vote-project/03-setup/gitpod-open-window.png) -->
 
 開いたページのURLをコピーして、 LINE の LIFF URL に登録します。
 
@@ -44,12 +45,16 @@ npm run start
 
 [LINE Developers](https://developers.line.biz/console/) からLINEの設定をしていきます
 
-:::message
-新規の方は、LINE Providerを作成。LINE Providerが既にある方は、LINE Loginを作成します。
+## 初回利用の方は新規プロバイダーの登録をしてください
+:::details LINE Developerの登録(初回利用の方のみ)
+[#Messaging APIを始めよう](https://developers.line.biz/ja/docs/messaging-api/getting-started/) を参考に 3. まで進めてください。
+
+1. LINE Developersコンソールにログインする
+2. 開発者として登録する（初回ログイン時のみ）
+3. 新規プロバイダーを作成する
 :::
 
 ![](/images/books/liff-vote-project/03-setup/create-liff-project.png)
-
 
 ### LIFF の作成
 LINE Loginのアカウントを作成したら、 `LIFF` > `ログイン` を選択し、LIFFの情報を記述していきます。
