@@ -143,7 +143,6 @@ const submitShareEvent = () => {
 }
 
 const buttonMessage = (question) => {
-  const profile = await liff.getProfile()
   return {
     "type": "template",
     "altText": "アンケートリクエストが送られました",
@@ -171,29 +170,8 @@ const buttonMessage = (question) => {
 }
 ```
 
-### 04-01. text に送信者の名前を表示してみましょう
-:::details ヒント
-liff.getProfile() を利用して、buttons のテンプレートに profile.displayName を記述してみましょう
-
-```javascript
-const buttonMessage = (question) => {
-  const profile = await liff.getProfile()
-  return {
-    "type": "template",
-    "altText": "アンケートリクエストが送られました",
-    "template": {
-      "type": "buttons",
-      ...
-      "text": `${profile.displayName}さんから「${question}」のアンケートリクエストが来ています`,
-    }
-    ...
-  }
-  ...
-}
-```
-:::
-
-### 04-02. actionを変えてみよう
+### 04-01. actionを変えてみよう
+buttonMessage では、 uri action を送信しています。uri action 以外にも多様な action があるので、触ってみましょう！
 [actionについて](https://developers.line.biz/ja/docs/messaging-api/actions/) / [LINE URLスキーム](https://developers.line.biz/ja/docs/messaging-api/using-line-url-scheme/)
 
 - カメラを開く [https://line.me/R/nv/camera/](https://developers.line.biz/ja/docs/messaging-api/using-line-url-scheme/#opening-the-camera-and-camera-roll)

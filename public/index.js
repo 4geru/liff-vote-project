@@ -128,8 +128,7 @@ const submitShareEvent = () => {
   })
 }
 
-const buttonMessage = async (question) => {
-  const profile = await liff.getProfile()
+const buttonMessage = (question) => {
   return {
     "type": "template",
     "altText": "アンケートリクエストが送られました",
